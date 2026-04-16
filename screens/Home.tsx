@@ -41,6 +41,13 @@ export default function HomeScreen({ user, onLogout }: HomeScreenProps) {
         </View>
 
         <View style={styles.userCard}>
+          <Text style={styles.label}>UID:</Text>
+          <Text style={styles.userId} numberOfLines={1}>
+            {user?.uid}
+          </Text>
+        </View>
+
+        <View style={styles.userCard}>
           <Text style={styles.label}>Status:</Text>
           <Text style={styles.status}>✓ Conectado</Text>
         </View>
@@ -109,6 +116,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
+  },
+  userId: {
+    fontSize: 12,
+    color: '#333',
+    fontWeight: '400',
+    fontFamily: 'monospace',
   },
   status: {
     fontSize: 16,

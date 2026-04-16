@@ -8,14 +8,50 @@ import { auth } from './firebase';
 import LoginScreen from './screens/Login';
 import RegisterScreen from './screens/Register';
 import HomeScreen from './screens/Home';
+import FinancialHome from './screens/FinancialHome';
+import AddTransactionScreen from './screens/AddTransactionScreen';
 
 const Stack = createNativeStackNavigator();
 
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  Home: undefined;
+  OldHome: undefined;
+  MainApp: undefined;
+  FinancialHome: undefined;
+  AddTransaction: undefined;
 };
+
+function MainApp({ user }: { user: User | null }) {
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const financialHomeRef = React.useRef<any>(null);
+
+  const handleTransactionAdded = () => {
+    setShowAddTransaction(false);
+    // Recarregar dados sem fazer remount completo
+    if (financialHomeRef.current) {
+      financialHomeRef.current.refresh?.();
+    }
+  };
+
+  if (showAddTransaction) {
+    return (
+      <AddTransactionScreen
+        user={user}
+        onBack={() => setShowAddTransaction(false)}
+        onSuccess={handleTransactionAdded}
+      />
+    );
+  }
+
+  return (
+    <FinancialHome
+      ref={financialHomeRef}
+      user={user}
+      onAddTransaction={() => setShowAddTransaction(true)}
+    />
+  );
+}
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -48,19 +84,12 @@ export default function App() {
       >
         {user ? (
           <Stack.Screen
-            name="Home"
+            name="MainApp"
             options={{
               animationTypeForReplace: 'pop',
             }}
           >
-            {() => (
-              <HomeScreen
-                user={user}
-                onLogout={() => {
-                  setUser(null);
-                }}
-              />
-            )}
+            {() => <MainApp user={user} />}
           </Stack.Screen>
         ) : (
           <Stack.Group
