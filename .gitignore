@@ -1,0 +1,90 @@
+# ==============================
+# 🔹 DEPENDÊNCIAS
+# ==============================
+node_modules/
+
+# ==============================
+# 🔹 EXPO
+# ==============================
+.expo/
+.expo-shared/
+dist/
+web-build/
+expo-env.d.ts
+
+# ==============================
+# 🔹 REACT NATIVE / METRO
+# ==============================
+.metro-cache/
+.metro-health-check*
+
+# ==============================
+# 🔹 ANDROID / IOS (Expo Managed)
+# ==============================
+/android
+/ios
+
+# ==============================
+# 🔹 ARQUIVOS SENSÍVEIS
+# ==============================
+.env
+.env.*
+!.env.example
+
+# Firebase configs (evita expor dados)
+google-services.json
+GoogleService-Info.plist
+
+# Certificados / chaves
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# ==============================
+# 🔹 PYTHON (se tiver backend)
+# ==============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+venv/
+.venv/
+env/
+
+instance/
+*.sqlite3
+
+# ==============================
+# 🔹 LOGS
+# ==============================
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# ==============================
+# 🔹 TYPESCRIPT
+# ==============================
+*.tsbuildinfo
+
+# ==============================
+# 🔹 BUILD / CACHE
+# ==============================
+build/
+.cache/
+
+# ==============================
+# 🔹 SISTEMA
+# ==============================
+.DS_Store
+Thumbs.db
+
+# ==============================
+# 🔹 IDE
+# ==============================
+.vscode/
+.idea/
