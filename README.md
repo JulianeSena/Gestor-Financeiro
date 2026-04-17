@@ -108,11 +108,8 @@ FIREBASE_PROJECT_ID=
 
 ## 📌 Próximas melhorias
 
-* 📊 Dashboard com resumo financeiro
 * 📈 Gráficos de gastos
 * 🔔 Notificações
-* 👤 Cadastro de usuários
-* ☁️ Sincronização em nuvem
 
 ---
 
