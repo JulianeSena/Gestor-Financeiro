@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
-import {StyleSheet,View,Text,TextInput,TouchableOpacity,Alert,ActivityIndicator,ScrollView,Switch,SafeAreaView,
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import { updateDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { TRANSACTION_CATEGORIES } from '../constants/transactionCategories';
 
-interface AddTransactionScreenProps {
+interface EditTransactionScreenProps {
   user: any;
+  transaction: any;
   onBack: () => void;
   onSuccess: () => void;
 }
 
-export default function AddTransactionScreen({
+export default function EditTransactionScreen({
   user,
+  transaction,
   onBack,
   onSuccess,
-}: AddTransactionScreenProps) {
-  const [descricao, setDescricao] = useState('');
-  const [valor, setValor] = useState('');
-  const [isEntrada, setIsEntrada] = useState(true);
-  const [categoria, setCategoria] = useState('');
+}: EditTransactionScreenProps) {
+  const [descricao, setDescricao] = useState(transaction.descricao);
+  const [valor, setValor] = useState(transaction.valor.toString());
+  const [categoria, setCategoria] = useState(transaction.categoriaId);
   const [loading, setLoading] = useState(false);
 
   const validateForm = (): boolean => {
@@ -47,7 +57,7 @@ export default function AddTransactionScreen({
     return true;
   };
 
-  const handleAddTransaction = async () => {
+  const handleUpdateTransaction = async () => {
     if (!validateForm()) {
       return;
     }
@@ -56,18 +66,16 @@ export default function AddTransactionScreen({
 
     try {
       const numericValue = parseFloat(valor.replace(',', '.'));
+      const transactionRef = doc(db, 'transacoes', transaction.id);
 
-      await addDoc(collection(db, 'transacoes'), {
-        userId: user.uid,
+      await updateDoc(transactionRef, {
         descricao: descricao.trim(),
         valor: numericValue,
-        tipo: isEntrada ? 'entrada' : 'gasto',
         categoriaId: categoria,
-        data: Timestamp.now(),
-        criadoEm: Timestamp.now(),
+        atualizadoEm: Timestamp.now(),
       });
 
-      Alert.alert('Sucesso', 'Transação criada com sucesso!', [
+      Alert.alert('Sucesso', 'Transação atualizada com sucesso!', [
         {
           text: 'OK',
           onPress: () => {
@@ -76,8 +84,8 @@ export default function AddTransactionScreen({
         },
       ]);
     } catch (error) {
-      console.error('Erro ao adicionar transação:', error);
-      Alert.alert('Erro', 'Não foi possível criar a transação');
+      console.error('Erro ao atualizar transação:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar a transação');
     } finally {
       setLoading(false);
     }
@@ -89,50 +97,22 @@ export default function AddTransactionScreen({
         <TouchableOpacity onPress={onBack} disabled={loading}>
           <Text style={styles.backButton}>← Voltar</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Nova Transação</Text>
+        <Text style={styles.title}>Editar Transação</Text>
         <View style={{ width: 50 }} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Tipo de Transação */}
+        {/* Tipo de Transação (somente leitura) */}
         <View style={styles.section}>
           <Text style={styles.label}>Tipo</Text>
           <View style={styles.typeContainer}>
-            <TouchableOpacity
-              style={[
-                styles.typeButton,
-                isEntrada && styles.typeButtonActive,
-              ]}
-              onPress={() => setIsEntrada(true)}
-              disabled={loading}
-            >
-              <Text
-                style={[
-                  styles.typeButtonText,
-                  isEntrada && styles.typeButtonTextActive,
-                ]}
-              >
-                📥 Entrada
+            <View style={[styles.typeButtonReadonly, { flex: 1 }]}>
+              <Text style={styles.typeButtonText}>
+                {transaction.tipo === 'entrada' ? '📥 Entrada' : '📤 Gasto'}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.typeButton,
-                !isEntrada && styles.typeButtonActive,
-              ]}
-              onPress={() => setIsEntrada(false)}
-              disabled={loading}
-            >
-              <Text
-                style={[
-                  styles.typeButtonText,
-                  !isEntrada && styles.typeButtonTextActive,
-                ]}
-              >
-                📤 Gasto
-              </Text>
-            </TouchableOpacity>
+            </View>
           </View>
+          <Text style={styles.hint}>Tipo não pode ser alterado</Text>
         </View>
 
         {/* Descrição */}
@@ -192,16 +172,16 @@ export default function AddTransactionScreen({
           </View>
         </View>
 
-        {/* Botão de Salvar */}
+        {/* Botão de Atualizar */}
         <TouchableOpacity
           style={[styles.saveButton, loading && styles.saveButtonDisabled]}
-          onPress={handleAddTransaction}
+          onPress={handleUpdateTransaction}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.saveButtonText}>Salvar Transação</Text>
+            <Text style={styles.saveButtonText}>Atualizar Transação</Text>
           )}
         </TouchableOpacity>
 
@@ -257,30 +237,30 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 8,
   },
+  hint: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 6,
+    marginLeft: 4,
+    fontStyle: 'italic',
+  },
   typeContainer: {
     flexDirection: 'row',
     gap: 12,
   },
-  typeButton: {
-    flex: 1,
+  typeButtonReadonly: {
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 2,
     borderColor: '#DDD',
     alignItems: 'center',
-  },
-  typeButtonActive: {
-    borderColor: '#1976D2',
-    backgroundColor: '#E3F2FD',
+    backgroundColor: '#F5F5F5',
   },
   typeButtonText: {
     fontSize: 14,
     fontWeight: '500',
     color: '#666',
-  },
-  typeButtonTextActive: {
-    color: '#1976D2',
   },
   input: {
     backgroundColor: '#fff',

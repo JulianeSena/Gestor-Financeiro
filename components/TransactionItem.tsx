@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 interface TransactionItemProps {
   descricao: string;
   valor: number;
   tipo: 'entrada' | 'gasto';
   data: string;
+  onPress?: () => void;
 }
 
 function TransactionItemComponent({
@@ -13,12 +14,21 @@ function TransactionItemComponent({
   valor,
   tipo,
   data,
+  onPress,
 }: TransactionItemProps) {
   const isEntrada = tipo === 'entrada';
-  const formattedValue = `R$ ${Math.abs(valor).toFixed(2).replace('.', ',')}`;
+  
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(Math.abs(amount));
+  };
+
+  const formattedValue = formatCurrency(valor);
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.leftContent}>
         <View
           style={[
@@ -46,7 +56,7 @@ function TransactionItemComponent({
       >
         {isEntrada ? '+' : '-'}{formattedValue}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 

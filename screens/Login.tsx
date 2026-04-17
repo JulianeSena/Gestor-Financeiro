@@ -13,9 +13,10 @@ import { auth } from '../firebase';
 
 type LoginScreenProps = {
   onNavigateToRegister: () => void;
+  onBack?: () => void;
 };
 
-export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
+export default function LoginScreen({ onNavigateToRegister, onBack }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    paddingTop: 50,
   },
   content: {
     backgroundColor: '#fff',

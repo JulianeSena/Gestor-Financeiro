@@ -14,9 +14,10 @@ import { auth } from '../firebase';
 
 type RegisterScreenProps = {
   onNavigateToLogin: () => void;
+  onBack?: () => void;
 };
 
-export default function RegisterScreen({ onNavigateToLogin }: RegisterScreenProps) {
+export default function RegisterScreen({ onNavigateToLogin, onBack }: RegisterScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -89,6 +90,12 @@ export default function RegisterScreen({ onNavigateToLogin }: RegisterScreenProp
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={onBack} disabled={!onBack}>
+            <Text style={[styles.backButton, !onBack && styles.backButtonHidden]}>← Voltar</Text>
+          </TouchableOpacity>
+          <View style={{ width: 72 }} />
+        </View>
         <Text style={styles.title}>Criar Conta</Text>
         <Text style={styles.subtitle}>Junte-se a nós agora!</Text>
 
@@ -154,6 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 40,
+    paddingTop: 50,
   },
   content: {
     backgroundColor: '#fff',
@@ -164,6 +172,20 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  backButton: {
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '600',
+  },
+  backButtonHidden: {
+    opacity: 0,
   },
   title: {
     fontSize: 28,

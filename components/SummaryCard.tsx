@@ -15,6 +15,13 @@ function SummaryCardComponent({ title, value, type, icon }: SummaryCardProps) {
     gasto: { bg: '#FFEBEE', text: '#F44336' },
   };
 
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(amount);
+  };
+
   const selectedColor = colors[type];
 
   return (
@@ -24,7 +31,7 @@ function SummaryCardComponent({ title, value, type, icon }: SummaryCardProps) {
         <Text style={styles.title}>{title}</Text>
       </View>
       <Text style={[styles.value, { color: selectedColor.text }]}>
-        R$ {value.toFixed(2).replace('.', ',')}
+        {formatCurrency(value)}
       </Text>
     </View>
   );
@@ -57,7 +64,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   value: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
+    lineHeight: 28,
   },
 });
