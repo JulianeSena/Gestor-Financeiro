@@ -9,7 +9,6 @@ import { auth, db } from './firebase';
 
 import LoginScreen from './screens/Login';
 import RegisterScreen from './screens/Register';
-import HomeScreen from './screens/Home';
 import FinancialHome from './screens/FinancialHome';
 import AddTransactionScreen from './screens/AddTransactionScreen';
 import EditTransactionScreen from './screens/EditTransactionScreen';
